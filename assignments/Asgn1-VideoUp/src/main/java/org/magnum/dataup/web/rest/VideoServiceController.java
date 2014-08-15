@@ -15,7 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -30,7 +33,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class VideoServiceController {
 
     // An in-memory list that the servlet uses to store the videos that are sent to it by clients
-    private List<Video> videos = new CopyOnWriteArrayList<Video>();
+    //private List<Video> videos = new CopyOnWriteArrayList<Video>();
+    private ConcurrentMap<Long, Video> videos = new ConcurrentHashMap<Long, Video>();
 
     final AtomicLong counter = new AtomicLong();
 
@@ -44,8 +48,8 @@ public class VideoServiceController {
      * @return
      */
     @RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH, method=RequestMethod.GET)
-    public @ResponseBody List<Video> getVideoList(){
-        return videos;
+    public @ResponseBody Collection<Video> getVideoList(){
+        return videos.values();
     }
 
     /**
@@ -80,9 +84,12 @@ public class VideoServiceController {
     public @ResponseBody Video addVideo(@RequestBody Video v){
 
         //generate a unique id
-        v.setId(counter.incrementAndGet());
+        long id = counter.incrementAndGet();
+
+        v.setId(id);
         v.setDataUrl(getDataUrl(v.getId()));
-        videos.add(v);
+        videos.put(id,v);
+
         return v;
     }
 
@@ -104,13 +111,18 @@ public class VideoServiceController {
     public @ResponseBody VideoStatus handleFileUpload(@PathVariable long id,
                                                       @RequestParam("data") MultipartFile data) throws IOException {
 
+
+        if(!videos.containsKey(id)){
+            throw new ResourceNotFoundException();
+        }
+
         VideoFileManager videoMngr = VideoFileManager.get();
 
         if (!data.isEmpty()) {
             try {
                 byte[] bytes = data.getBytes();
                 BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(new File("/" + id + "-uploaded"))
+                        new FileOutputStream(new File("/Users/Juan/dev/" + id + "-uploaded"))
                 );
 
                 stream.write(bytes);
@@ -149,12 +161,14 @@ public class VideoServiceController {
 
         //TODO: check to make sure a video with given id exists, if not throw ex
 
-        if(true) throw new ResourceNotFoundException();
+        if(!videos.containsKey(id)){
+            throw new ResourceNotFoundException();
+        }
 
         try {
             // get your file as InputStream
             InputStream is = new BufferedInputStream(
-                    new FileInputStream(new File("/" + id + "-uploaded"))
+                    new FileInputStream(new File("/Users/Juan/dev/" + id + "-uploaded"))
             );
             // copy it to response's OutputStream
             IOUtils.copy(is, response.getOutputStream());
