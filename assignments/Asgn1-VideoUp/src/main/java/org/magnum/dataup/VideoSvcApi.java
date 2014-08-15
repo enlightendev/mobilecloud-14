@@ -169,7 +169,7 @@ public interface VideoSvcApi {
 	 * @return
 	 */
 	@Multipart
-	@POST(VIDEO_DATA_PATH)
+	@POST(VIDEO_DATA_PATH) // --> /video/{id}/data
 	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData);
 	
 	/**

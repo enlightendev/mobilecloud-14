@@ -72,8 +72,7 @@ public class AutoGradingTest {
 
 	private static final String SERVER = "http://localhost:8080";
 
-	private File testVideoData = new File(
-			"src/test/resources/test.mp4");
+    private File testVideoData = new File("C:\\dev\\java\\edu\\mobilecloud-14\\assignments\\Asgn1-VideoUp\\src\\test\\resources\\test.mp4");
 	
 	private Video video = Video.create().withContentType("video/mp4")
 			.withDuration(123).withSubject(UUID.randomUUID().toString())
