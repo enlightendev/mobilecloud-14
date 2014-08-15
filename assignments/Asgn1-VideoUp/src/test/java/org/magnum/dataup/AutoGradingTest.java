@@ -59,6 +59,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.magnum.dataup.web.api.VideoSvcApi;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.model.VideoStatus.VideoState;
@@ -72,8 +73,12 @@ public class AutoGradingTest {
 
 	private static final String SERVER = "http://localhost:8080";
 
-    private File testVideoData = new File("/Users/Juan/dev/java/edu/mobilecloud-14/assignments/Asgn1-VideoUp/src/test/resources/test.mp4");
-	
+    /**
+     * Make sure to set the working directory in the run configuration to be the parent directory
+     * in order to find the file using the relative path.
+     */
+    private File testVideoData = new File("src/test/resources/test.mp4");
+
 	private Video video = Video.create().withContentType("video/mp4")
 			.withDuration(123).withSubject(UUID.randomUUID().toString())
 			.withTitle(UUID.randomUUID().toString()).build();

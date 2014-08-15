@@ -1,27 +1,23 @@
 package org.magnum.dataup.web;
 
-import org.magnum.dataup.VideoSvcApi;
-import org.magnum.dataup.model.VideoStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by JL25292 on 8/13/2014.
+ * A controller for showing how to use retrofit to define its api and create a client that abstracts much of the
+ * http semantics.
  */
 @Controller
 @RequestMapping("/test")
 public class ExperimentController {
 
     /**
-     * testing method to test pathvar and request params
+     *
      * @param pvar1
      * @param name
      * @return
@@ -29,25 +25,20 @@ public class ExperimentController {
     @RequestMapping(value="/pathvar/{pvar1}", method=RequestMethod.GET)
     public @ResponseBody String testPathVar(
                                             @PathVariable String pvar1,
-                                            @RequestParam(value = "name", required = false) String name){
+                                            @RequestParam(value = "name", required = false) String name,
+                                            @RequestParam(value = "male", required = false) Boolean male){
 
-        if(name == null)
-            name = "nothing";
-
-        return "You entered " + pvar1 + " as a path var and " + name + " as a request param.";
+        return "breakpoint here";
     }
 
 
     /**
-     * @GET("/test/{user}/repos")
-     * List<String> listRepos(@Path("user") String user);
      *
      * @param user
      * @return
      */
     @RequestMapping(value="/{user}/repos", method=RequestMethod.GET)
-    public @ResponseBody
-    List<String> testClient(@PathVariable String user){
+    public @ResponseBody List<String> listRepos(@PathVariable String user){
 
         String[] repos = new String[]{user + "rep1",user + "rep2"};
 
@@ -55,9 +46,10 @@ public class ExperimentController {
     }
 
     @RequestMapping(value= "/{id}/data", method=RequestMethod.POST)
-    public @ResponseBody String upload(@PathVariable long id,
-                                       @RequestParam("file") MultipartFile file) throws IOException {
+    public @ResponseBody String uploadFile(@PathVariable long id,
+                                           @RequestParam("file") MultipartFile file) throws IOException {
 
-        return "nice";
+
+        return "breakpoint here";
     }
 }

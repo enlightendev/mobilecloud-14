@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup;
+package org.magnum.dataup.web.api;
 
 /**
  *                       DO NOT MODIFY THIS INTERFACE

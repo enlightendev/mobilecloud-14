@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup;
+package org.magnum.dataup.util;
 
 import io.magnum.autograder.HandinUtil;
 
@@ -24,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.magnum.dataup.InternalAutoGradingTest;
 
 /**
  * This class allows you to estimate the score for your solution before handing it in.

@@ -1,8 +1,7 @@
 package org.magnum.dataup.web.rest;
 
-import org.apache.commons.io.IOUtils;
-import org.magnum.dataup.VideoFileManager;
-import org.magnum.dataup.VideoSvcApi;
+import org.magnum.dataup.util.VideoFileManager;
+import org.magnum.dataup.web.api.VideoSvcApi;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.web.util.ResourceNotFoundException;
@@ -16,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -33,7 +30,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class VideoServiceController {
 
     // An in-memory list that the servlet uses to store the videos that are sent to it by clients
-    //private List<Video> videos = new CopyOnWriteArrayList<Video>();
     private ConcurrentMap<Long, Video> videos = new ConcurrentHashMap<Long, Video>();
 
     final AtomicLong counter = new AtomicLong();
@@ -118,6 +114,7 @@ public class VideoServiceController {
 
         VideoFileManager videoMngr = VideoFileManager.get();
 
+        /*
         if (!data.isEmpty()) {
             try {
                 byte[] bytes = data.getBytes();
@@ -137,6 +134,14 @@ public class VideoServiceController {
             //return "You failed to upload " + id + " because the file was empty.";
             return new VideoStatus(VideoStatus.VideoState.PROCESSING);
         }
+        */
+
+        byte[] bytes = data.getBytes();
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+
+        videoMngr.saveVideoData(videos.get(id), inputStream);
+
+        return new VideoStatus(VideoStatus.VideoState.READY);
     }
 
     /**
@@ -157,7 +162,7 @@ public class VideoServiceController {
      * @param response
      */
     @RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.GET)
-    public void streamFile(@PathVariable long id, HttpServletResponse response) {
+    public void streamFile(@PathVariable long id, HttpServletResponse response) throws IOException {
 
         //TODO: check to make sure a video with given id exists, if not throw ex
 
@@ -165,6 +170,9 @@ public class VideoServiceController {
             throw new ResourceNotFoundException();
         }
 
+        VideoFileManager videoMngr = VideoFileManager.get();
+
+        /*
         try {
             // get your file as InputStream
             InputStream is = new BufferedInputStream(
@@ -176,6 +184,9 @@ public class VideoServiceController {
         } catch (IOException ex) {
             throw new RuntimeException("IOError writing file to output stream");
         }
+        */
+
+        videoMngr.copyVideoData(videos.get(id), response.getOutputStream());
 
     }
 
