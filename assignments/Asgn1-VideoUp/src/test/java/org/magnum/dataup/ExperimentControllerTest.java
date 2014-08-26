@@ -18,6 +18,13 @@ public class ExperimentControllerTest {
 			.setEndpoint(SERVER).build()
 			.create(ExperimentControllerApi.class);
 
+    @Test
+    public void testPathVar(){
+        String result = tstService.testPathVar("pvar_passed", "juan", true);
+
+        System.out.println(result);
+    }
+
 	@Test
 	public void testListRepos() {
         List<String> repos = tstService.listRepos("juan");

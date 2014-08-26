@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface ExperimentControllerApi {
 
-    @GET("/test/pathvar/{pvar}")
-    String testPathVar(@Path("pvar1") String pvar,
+    @GET("/test/pathvar/{pvar1}")
+    String testPathVar(@Path("pvar1") String pvar1,
                        @Query("name") String name,
                        @Query("male") Boolean male);
 

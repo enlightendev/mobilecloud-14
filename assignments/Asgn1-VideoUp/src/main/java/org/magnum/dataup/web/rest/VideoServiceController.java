@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * NOTES:
  *  - need to implement contract defined in VideoSvcApi
  *
- * Created by JL25292 on 8/13/2014.
+ * TODO: change video file service into a bean
  */
 @Controller
 public class VideoServiceController {
@@ -114,28 +114,6 @@ public class VideoServiceController {
 
         VideoFileManager videoMngr = VideoFileManager.get();
 
-        /*
-        if (!data.isEmpty()) {
-            try {
-                byte[] bytes = data.getBytes();
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(new File("/Users/Juan/dev/" + id + "-uploaded"))
-                );
-
-                stream.write(bytes);
-                stream.close();
-                //return "You successfully uploaded " + id + " into " + id + "-uploaded !";
-                return new VideoStatus(VideoStatus.VideoState.READY);
-            } catch (Exception e) {
-                return new VideoStatus(VideoStatus.VideoState.PROCESSING);
-                //return "You failed to upload " + id + " => " + e.getMessage();
-            }
-        } else {
-            //return "You failed to upload " + id + " because the file was empty.";
-            return new VideoStatus(VideoStatus.VideoState.PROCESSING);
-        }
-        */
-
         byte[] bytes = data.getBytes();
         InputStream inputStream = new ByteArrayInputStream(bytes);
 
@@ -164,27 +142,11 @@ public class VideoServiceController {
     @RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.GET)
     public void streamFile(@PathVariable long id, HttpServletResponse response) throws IOException {
 
-        //TODO: check to make sure a video with given id exists, if not throw ex
-
         if(!videos.containsKey(id)){
             throw new ResourceNotFoundException();
         }
 
         VideoFileManager videoMngr = VideoFileManager.get();
-
-        /*
-        try {
-            // get your file as InputStream
-            InputStream is = new BufferedInputStream(
-                    new FileInputStream(new File("/Users/Juan/dev/" + id + "-uploaded"))
-            );
-            // copy it to response's OutputStream
-            IOUtils.copy(is, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException ex) {
-            throw new RuntimeException("IOError writing file to output stream");
-        }
-        */
 
         videoMngr.copyVideoData(videos.get(id), response.getOutputStream());
 
@@ -203,5 +165,4 @@ public class VideoServiceController {
                         + ((request.getServerPort() != 80) ? ":"+request.getServerPort() : "");
         return base;
     }
-
 }
