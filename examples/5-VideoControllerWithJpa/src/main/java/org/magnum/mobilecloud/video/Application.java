@@ -1,8 +1,10 @@
 package org.magnum.mobilecloud.video;
 
+import org.magnum.mobilecloud.video.config.DBPopulator;
 import org.magnum.mobilecloud.video.repository.VideoRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -29,7 +31,11 @@ public class Application {
 	
 	// Tell Spring to launch our app!
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+
+		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+        DBPopulator dbPopulator = (DBPopulator)ctx.getBean("dbPopulator");
+        dbPopulator.addVideos();
 	}
 	
 }
